@@ -28,5 +28,6 @@ def get_midnighters():
 
 if __name__ == '__main__':
     midnighters = get_midnighters()
+    print("These users were noticed in what they study Python at night:")
     for midnighter in midnighters:
         print(midnighter)
