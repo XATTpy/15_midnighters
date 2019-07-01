@@ -1,6 +1,6 @@
-import pytz
+from pytz import timezone
 import requests
-from datetime import datetime
+from datetime import datetime, time
 
 
 def load_attempts():
@@ -20,18 +20,19 @@ def load_attempts():
             break
 
 
-def get_midnighters():
+def get_midnighters(records):
     midnighters = []
-    for record in load_attempts():
-        username, timestamp, timezone = record
-        record_time = (pytz.timezone(timezone)).localize(datetime.fromtimestamp(timestamp))
+    for record in records:
+        username, timestamp, tz = record
+        record_time = datetime.fromtimestamp(timestamp, timezone(tz))
         if record_time.hour in range(7) and not username in midnighters:
             midnighters.append(username)
     return midnighters
         
 
 if __name__ == '__main__':
-    midnighters = get_midnighters()
-    print("These users were noticed in what they study Python at night:")
+    records = load_attempts()
+    midnighters = get_midnighters(records)
+    print('These users were noticed in what they study Python at night:')
     for midnighter in midnighters:
         print(midnighter)
