@@ -4,16 +4,20 @@ from datetime import datetime
 
 
 def load_attempts():
-    query = 'https://devman.org/api/challenges/solution_attempts/'
-    pages = requests.get(query).json()['number_of_pages']
-    for page in range(1, pages+1):
+    url = 'https://devman.org/api/challenges/solution_attempts/'
+    page = 1
+    while True:
         payload = {'page': page}
-        records = requests.get(query, params=payload).json()['records']
-        for record in records:
+        request = requests.get(url, params=payload).json()
+        for record in request['records']:
             username = record['username']
             timestamp = record['timestamp']
             timezone = record['timezone']
             yield username, timestamp, timezone
+        number_of_pages = request['number_of_pages']
+        page += 1
+        if page == number_of_pages:
+            break
 
 
 def get_midnighters():
